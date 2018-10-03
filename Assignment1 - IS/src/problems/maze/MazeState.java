@@ -1,5 +1,6 @@
 package problems.maze;
 
+import java.util.HashSet;
 import problems.maze.MazeState;
 import search.State;
 import utils.Position;
@@ -9,18 +10,25 @@ import utils.Position;
  */
 public class MazeState extends State implements Cloneable{
 	
-	/** An state is includes a position given by the coordinates (x,y) */
 	public Position position;
+        public HashSet<Position> cheeseEaten;
+        public boolean damaged;
 
 	@Override
 	public boolean equals(Object anotherState) {
-		// TODO Auto-generated method stub
-		return false;
+		if (!(anotherState instanceof MazeState)){
+			System.out.println("Trying to compare two objects of different classes.");
+			return false;
+		}
+		if(this.position.equals(((MazeState)anotherState).position) && 
+                   this.cheeseEaten.equals(((MazeState)anotherState).cheeseEaten) && 
+                   this.damaged == ((MazeState)anotherState).damaged) return true;
+		else return true;
 	}
 
 	@Override
 	public int hashCode() {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
