@@ -1,6 +1,7 @@
 package problems.maze;
 
 import java.util.HashSet;
+import java.util.Objects;
 import problems.maze.MazeState;
 import search.State;
 import utils.Position;
@@ -28,13 +29,11 @@ public class MazeState extends State implements Cloneable{
 
 	@Override
 	public int hashCode() {
-		
-		return 0;
+		return Objects.hash(position,cheeseEaten,damaged);
 	}
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Position: '" + this.position + "', CheeseEaten: '" + this.cheeseEaten + "', Damaged: '" + this.damaged + "'";
 	}
 }
