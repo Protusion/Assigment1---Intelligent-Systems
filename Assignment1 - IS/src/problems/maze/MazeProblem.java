@@ -2,6 +2,7 @@ package problems.maze;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 
 import search.State;
 import search.Action;
@@ -61,13 +62,28 @@ public class MazeProblem implements SearchProblem, ProblemVisualizable{
 
 	@Override
 	public State initialState() {
-		// TODO Auto-generated method stub
-		return null;
+                
+		MazeState initialState = new MazeState();
+                initialState.position = maze.input();
+                initialState.damaged = false;
+                //initialState.cheeseEaten.clear();
+                
+		return initialState;
 	}
 
 	@Override
 	public State applyAction(State state, Action action) {
-		// TODO Auto-generated method stub
+                Set<Position> reachablepositions;
+		reachablepositions = maze.reachablePositions(((MazeState)state).position);
+                MazeState nextState = new MazeState();
+                nextState.position = new Position(((MazeState)state).position.x,((MazeState)state).position.y);
+                String actionS = action.getId();
+                int x = ((MazeState)state).position.x;
+                int y = ((MazeState)state).position.y;
+                if(actionS.equals("RIGHT") && reachablepositions.contains(new Position(x+1,y))){
+                    
+                }
+                
 		return null;
 	}
 
