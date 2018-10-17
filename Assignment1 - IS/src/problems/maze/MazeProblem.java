@@ -122,8 +122,10 @@ public class MazeProblem implements SearchProblem, ProblemVisualizable{
 
 	@Override
 	public double cost(State state, Action action) {
-		// TODO Auto-generated method stub
-		return 0;
+		if(((MazeState)state).damaged < 2 && ((MazeState)state).damaged > 1){
+                    return 2;
+                }
+		return 1;
 	}
 
 	@Override
