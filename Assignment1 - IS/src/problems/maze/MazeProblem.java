@@ -65,7 +65,7 @@ public class MazeProblem implements SearchProblem, ProblemVisualizable{
                 
 		MazeState initialState = new MazeState();
                 initialState.position = maze.input();
-                initialState.damaged = false;
+                initialState.damaged = 0;
                 //initialState.cheeseEaten.clear();
                 
 		return initialState;
@@ -75,22 +75,49 @@ public class MazeProblem implements SearchProblem, ProblemVisualizable{
 	public State applyAction(State state, Action action) {
                 Set<Position> reachablepositions;
 		reachablepositions = maze.reachablePositions(((MazeState)state).position);
-                MazeState nextState = new MazeState();
-                nextState.position = new Position(((MazeState)state).position.x,((MazeState)state).position.y);
+                MazeState nextState = ((MazeState)state).clone();
+                int x = nextState.position.x;
+                int y = nextState.position.y;
                 String actionS = action.getId();
-                int x = ((MazeState)state).position.x;
-                int y = ((MazeState)state).position.y;
                 if(actionS.equals("RIGHT") && reachablepositions.contains(new Position(x+1,y))){
-                    
+                    nextState.position = new Position(x+1,y);
+                }else if(actionS.equals("LEFT") && reachablepositions.contains(new Position(x-1,y))){
+                    nextState.position = new Position(x-1,y);
+                }else if(actionS.equals("UP") && reachablepositions.contains(new Position(x,y+1))){
+                    nextState.position = new Position(x,y+1);
+                }else if(actionS.equals("DOWN") && reachablepositions.contains(new Position(x,y-1))){
+                    nextState.position = new Position(x,y-1);
+                }else if(actionS.equals("EAT") && maze.cheesePositions.contains(new Position(x,y))){
+                    nextState.cheeseEaten.add(new Position(x,y));
                 }
-                
-		return null;
+                  
+                if(maze.containsCat(nextState.position)){
+                    nextState.damaged++;
+                }
+		return nextState;
 	}
 
 	@Override
 	public ArrayList<Action> getPossibleActions(State state) {
-		// TODO Auto-generated method stub
-		return null;
+                ArrayList<Action> possibleActions = new ArrayList<Action>();
+                Set<Position> reachablepositions;
+                reachablepositions = maze.reachablePositions(((MazeState)state).position);
+                int x = ((MazeState)state).position.x;
+                int y = ((MazeState)state).position.y;
+                for(int i = 0; i < reachablepositions.size();i++){
+                    if(reachablepositions.contains(new Position(x+1,y))){
+                        possibleActions.add(MazeAction.RIGHT);
+                    }else if(reachablepositions.contains(new Position(x-1,y))){
+                        possibleActions.add(MazeAction.LEFT);
+                    }else if(reachablepositions.contains(new Position(x,y+1))){
+                        possibleActions.add(MazeAction.UP);
+                    }else if(reachablepositions.contains(new Position(x,y-1))){
+                        possibleActions.add(MazeAction.DOWN);
+                    }else if(maze.cheesePositions.contains(new Position(x,y))){
+                        possibleActions.add(MazeAction.EAT);
+                    }
+                }
+		return possibleActions;
 	}
 
 	@Override
@@ -101,8 +128,9 @@ public class MazeProblem implements SearchProblem, ProblemVisualizable{
 
 	@Override
 	public boolean testGoal(State chosen) {
-		// TODO Auto-generated method stub
-		return false;
+		return ((MazeState)chosen).position.equals(maze.output()) &&
+                        maze.cheesePositions.equals(((MazeState)chosen).cheeseEaten) && 
+                        ((MazeState)chosen).damaged < 2;
 	}
 
 	@Override
