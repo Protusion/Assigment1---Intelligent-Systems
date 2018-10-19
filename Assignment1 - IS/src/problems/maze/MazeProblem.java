@@ -1,5 +1,6 @@
 package problems.maze;
 
+import static java.lang.Math.abs;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -137,8 +138,36 @@ public class MazeProblem implements SearchProblem, ProblemVisualizable{
 
 	@Override
 	public double heuristic(State state) {
-		// TODO Auto-generated method stub
-		return 0;
+		Position actualPosition = ((MazeState)state).position;
+                Set<Position> cheesesPositions = maze.cheesePositions;
+                int x, y, x1, y1;
+                double distance = Double.MAX_VALUE, totalDistance = 0;
+                
+                x = actualPosition.x;
+                y = actualPosition.y;
+                
+                for(int i = 0; i <maze.cheesePositions.size() ;i++){
+                    Position cheeseselected = null;
+                    for(Position cheeseI : cheesesPositions){
+                        x1 = cheeseI.x;
+                        y1 = cheeseI.y;
+                        double distancetocheese;
+                        distancetocheese = abs((x-x1)) + abs((y-y1));
+                        
+                        if(distance > distancetocheese){
+                            distance = distancetocheese;
+                            cheeseselected=cheeseI;
+                        }
+                        
+                    }
+                    totalDistance+=distance;
+                    x = cheeseselected.x;
+                    y = cheeseselected.y;
+                    cheesesPositions.remove(cheeseselected);
+                }
+                
+                totalDistance = totalDistance + abs(x-maze.output().x) + abs(y-maze.output().y);
+		return totalDistance;
 	}
 	
     
