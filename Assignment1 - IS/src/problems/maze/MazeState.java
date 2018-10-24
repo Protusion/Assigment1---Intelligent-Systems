@@ -15,6 +15,14 @@ public class MazeState extends State implements Cloneable{
         public HashSet<Position> cheeseEaten;
         public int damaged;
 
+        public MazeState(){
+            
+        }
+        
+        public MazeState(int x, int y){
+            position = new Position(x, y);
+        }
+        
 	@Override
 	public boolean equals(Object anotherState) {
 		if (!(anotherState instanceof MazeState)){
