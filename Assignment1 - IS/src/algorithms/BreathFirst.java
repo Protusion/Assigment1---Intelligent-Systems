@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package search;
+package algorithms;
 
 import java.util.ArrayList;
 import java.util.PriorityQueue;
@@ -15,20 +15,24 @@ import search.*;
  */
 public class BreathFirst extends SearchAlgorithm {
 
-    protected ArrayList<State> explored = new ArrayList();
-    protected PriorityQueue open = new PriorityQueue(100, Node.BY_DEPTH);
+    protected ArrayList<State> explored = new ArrayList<State>();
+    protected PriorityQueue<Node> open = new PriorityQueue<Node>(100, Node.BY_DEPTH);
 
     @Override
     public void setParams(String[] params) {
-        Node initialNode = new Node(super.problem.initialState());
-        open.add(initialNode);
+        
     }
 
     @Override
     public void doSearch() {
+        Node initialNode = new Node(super.problem.initialState());
+        open.add(initialNode);
         //super.generatedNodes = 1;
         while (!open.isEmpty()) {
-            Node extractedNode = (Node) open.remove();
+            if(open.size() > super.openMaxSize){
+                super.openMaxSize = open.size();
+            }
+            Node extractedNode = open.poll();
             //super.generatedNodes++;
             if (!explored.contains(extractedNode.getState())) {
                 if (problem.testGoal(extractedNode.getState())) {
@@ -49,7 +53,9 @@ public class BreathFirst extends SearchAlgorithm {
                 } else {
                     explored.add(extractedNode.getState());
                     super.exploredMaxSize++;
-                    open.add(super.getSuccessors(extractedNode));
+                    for(Node node : getSuccessors(extractedNode)){
+                        open.add(node);
+                    }
                     super.expandedNodes++;
                 }
             }

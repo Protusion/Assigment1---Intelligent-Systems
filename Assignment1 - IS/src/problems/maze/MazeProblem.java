@@ -147,7 +147,7 @@ public class MazeProblem implements SearchProblem, ProblemVisualizable {
         y = actualPosition.y;
 
         for (int i = 0; i < maze.cheesePositions.size(); i++) {
-            Position cheeseselected = null;
+            Position cheeseselected = new Position(0,0);
             for (Position cheeseI : cheesesPositions) {
                 x1 = cheeseI.x;
                 y1 = cheeseI.y;
