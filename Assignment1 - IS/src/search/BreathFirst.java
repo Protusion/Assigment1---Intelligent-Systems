@@ -5,6 +5,7 @@
  */
 package search;
 
+import java.util.ArrayList;
 import search.*;
 
 /**
@@ -20,7 +21,12 @@ public class BreathFirst extends SearchAlgorithm{
 
     @Override
     public void doSearch() {
-        
+        ArrayList<Node> open = new ArrayList<Node>();
+        Node initialState = new Node(super.problem.initialState());
+        open.add(initialState);
+        while(!open.isEmpty()){
+            
+        }
     }
     
 }
