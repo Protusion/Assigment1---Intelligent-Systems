@@ -7,7 +7,6 @@ package search;
 
 import java.util.ArrayList;
 import java.util.PriorityQueue;
-import problems.maze.MazeState;
 import search.*;
 
 /**
@@ -18,7 +17,7 @@ public class BreathFirst extends SearchAlgorithm {
 
     protected ArrayList<State> explored = new ArrayList();
     protected PriorityQueue open = new PriorityQueue(100, Node.BY_DEPTH);
-    
+
     @Override
     public void setParams(String[] params) {
         Node initialNode = new Node(super.problem.initialState());
@@ -27,38 +26,33 @@ public class BreathFirst extends SearchAlgorithm {
 
     @Override
     public void doSearch() {
-        super.generatedNodes = 1;
+        //super.generatedNodes = 1;
         while (!open.isEmpty()) {
             Node extractedNode = (Node) open.remove();
-            super.generatedNodes++;
+            //super.generatedNodes++;
             if (!explored.contains(extractedNode.getState())) {
                 if (problem.testGoal(extractedNode.getState())) {
                     super.actionSequence.add(extractedNode.getAction());
-                    Node parent = extractedNode.getParent();;
-                    
+                    Node parent = extractedNode.getParent();
+
                     for (State state : explored) {
-                        
-                        if (state.equals(parent.getState())) {
-                            super.totalCost+=problem.cost(state, parent.getAction());
+
+                        if (state.equals(parent.getState()) && !super.isInitialNode(parent)) {
+                            super.totalCost += problem.cost(state, parent.getAction());
                             super.actionSequence.add(parent.getAction());
                             parent = parent.getParent();
-                            explored.remove(state);
-                            super.exploredMaxSize--;
+                            //super.exploredMaxSize--;
                         }
-                        
+                        explored.remove(state);
                     }
-                    
                     super.solutionFound = true;
+                } else {
+                    explored.add(extractedNode.getState());
+                    super.exploredMaxSize++;
+                    open.add(super.getSuccessors(extractedNode));
+                    super.expandedNodes++;
                 }
-                
-                explored.add(extractedNode.getState());
-                super.exploredMaxSize++;
-                open.add(super.getSuccessors(extractedNode));
-               super.expandedNodes++;
-
             }
-
         }
     }
-
 }
