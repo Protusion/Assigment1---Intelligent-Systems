@@ -7,9 +7,7 @@ package algorithms;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.PriorityQueue;
-import java.util.Queue;
 import search.*;
 
 /**
@@ -56,11 +54,13 @@ public class Astar extends SearchAlgorithm {
                     for (Node node : getSuccessors(extractedNode)) {
                         open.add(node);
                     }
+                    
                 }
             }
             if (open.size() > this.openMaxSize) {
-                this.openMaxSize = open.size();
-            }
+                        this.openMaxSize = open.size();
+                    }
+
         }
     }
 }
