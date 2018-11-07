@@ -14,7 +14,8 @@ import visualization.ProblemView;
 import visualization.ProblemVisualizable;
 
 /**
- * Extends SearchProblem and implements the functions which define the maze problem. Always uses two cheeses.
+ * Extends SearchProblem and implements the functions which define the maze
+ * problem. Always uses two cheeses.
  */
 public class MazeProblem implements SearchProblem, ProblemVisualizable {
 
@@ -80,7 +81,9 @@ public class MazeProblem implements SearchProblem, ProblemVisualizable {
         int x = nextState.position.x;
         int y = nextState.position.y;
         /* Checking which action it is */
-        if (action.equals(MazeAction.RIGHT)) {
+        if (action.equals(MazeAction.EAT)) {
+            nextState.cheeseEaten.add(new Position(x, y)); // If eat, updates nextState position
+        } else if (action.equals(MazeAction.RIGHT)) {
             nextState.position = new Position(x + 1, y); // If right, updates nextState position
         } else if (action.equals(MazeAction.LEFT)) {
             nextState.position = new Position(x - 1, y); // If left, updates nextState position
@@ -88,8 +91,6 @@ public class MazeProblem implements SearchProblem, ProblemVisualizable {
             nextState.position = new Position(x, y - 1); // If up, updates nextState position
         } else if (action.equals(MazeAction.DOWN)) {
             nextState.position = new Position(x, y + 1); // If down, updates nextState position
-        } else if (action.equals(MazeAction.EAT)) {
-            nextState.cheeseEaten.add(new Position(x, y)); // If eat, updates nextState position
         }
         return nextState; // Returns a new state with the position that the action leads to
     }
@@ -140,8 +141,13 @@ public class MazeProblem implements SearchProblem, ProblemVisualizable {
                 && ((MazeState) chosen).damaged < 2;
     }
 
-    @Override
-    public double heuristic(State state) {
+    @Override 
+    public double heuristic(State state){
+       
+        return 0;
+    }
+    
+    public double heuristic2(State state) {
         Position actualPosition = new Position(((MazeState) state).position.x, ((MazeState) state).position.y);
         Set<Position> cheesesPositions = new HashSet<Position>();
         for (Position cheeses : maze.cheesePositions) {
