@@ -2,7 +2,7 @@ package problems.maze;
 
 import static java.lang.Math.abs;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 import search.State;
@@ -20,7 +20,7 @@ import visualization.ProblemVisualizable;
 public class MazeProblem implements SearchProblem, ProblemVisualizable {
 
     // Uses always three cheeses (to make it easier implementation).
-    private static final int NUM_CHEESES = 3;
+    private static final int NUM_CHEESES = 4;
     // Penalty factor for fight with the cat. 
     private static final double PENALTY = 2;
 
@@ -141,24 +141,118 @@ public class MazeProblem implements SearchProblem, ProblemVisualizable {
                 && ((MazeState) chosen).damaged < 2;
     }
 
-    @Override 
-    public double heuristic(State state){
-       
-        return 0;
+    /* -------------------------------- HEURISTICS ---------------------------------------------- */ 
+    
+    //@Override
+    /* Straight path from the current position to the exit */
+    public double heuristic4(State state){
+        double heuristica = abs(((MazeState)state).position.x - maze.output().x) + abs(((MazeState)state).position.y - maze.output().y);
+        return heuristica;
     }
+    
+    /* Looks for the closest cheese from the current position until it gets to the exit */
     
     public double heuristic2(State state) {
         Position actualPosition = new Position(((MazeState) state).position.x, ((MazeState) state).position.y);
-        Set<Position> cheesesPositions = new HashSet<Position>();
+        LinkedList<Position> cheesesPositions = new LinkedList<Position>();
         for (Position cheeses : maze.cheesePositions) {
-            cheesesPositions.add(cheeses);
+            if(!((MazeState)state).cheeseEaten.contains(cheeses)){
+                cheesesPositions.add(cheeses);
+            }
         }
+        
         int x, y, x1, y1;
         double distance = Double.MAX_VALUE, totalDistance = 0;
         x = actualPosition.x;
         y = actualPosition.y;
+        int numberCheeses = cheesesPositions.size();
 
-        for (int i = 0; i < maze.cheesePositions.size(); i++) {
+        for (int i = 0; i < numberCheeses; i++) {
+            Position cheeseselected = new Position(0, 0);
+            for (Position cheeseI : cheesesPositions) {
+                x1 = cheeseI.x;
+                y1 = cheeseI.y;
+                double distancetocheese;
+                distancetocheese = abs((x - x1)) + abs((y - y1));
+
+                if (distance > distancetocheese) {
+                    distance = distancetocheese;
+                    cheeseselected = cheeseI;
+                }
+
+            }
+            totalDistance += distance;
+            x = cheeseselected.x;
+            y = cheeseselected.y;
+            cheesesPositions.remove(cheeseselected);
+            distance = Double.MAX_VALUE;
+        }
+
+        totalDistance = totalDistance + abs(x - maze.output().x) + abs(y - maze.output().y);
+        return totalDistance;
+    }
+    
+    //@Override 
+    /* Looks for the shortest path going from the furthest cheeses to the exit */
+    public double heuristic3(State state){
+        Position actualPosition = new Position(((MazeState) state).position.x, ((MazeState) state).position.y);
+        LinkedList<Position> cheesesPositions = new LinkedList<Position>();
+        for (Position cheeses : maze.cheesePositions) {
+            if(!((MazeState)state).cheeseEaten.contains(cheeses)){
+                cheesesPositions.add(cheeses);
+            }
+        }
+        
+        int x, y, x1, y1;
+        double distance = 0, totalDistance = 0;
+        x = actualPosition.x;
+        y = actualPosition.y;
+        int numberCheeses = cheesesPositions.size();
+
+        for (int i = 0; i < numberCheeses; i++) {
+            Position cheeseselected = new Position(0, 0);
+            for (Position cheeseI : cheesesPositions) {
+                x1 = cheeseI.x;
+                y1 = cheeseI.y;
+                double distancetocheese;
+                distancetocheese = abs((maze.output().x - x1)) + abs((maze.output().y - y1));
+
+                if (distance < distancetocheese) {
+                    cheeseselected = cheeseI;
+                    distance = distancetocheese;
+                }
+
+            }
+            totalDistance += abs(x - cheeseselected.x) + abs(y - cheeseselected.y);
+            x = cheeseselected.x;
+            y = cheeseselected.y;
+            cheesesPositions.remove(cheeseselected);
+            distance = 0;
+        }
+
+        totalDistance += abs(x - maze.output().x) + abs(y - maze.output().y);
+        System.out.println(totalDistance);
+        return totalDistance;
+    }
+    
+    /* the ultimate jeuristic */
+    @Override
+    public double heuristic(State state) {
+        Position actualPosition = new Position(((MazeState) state).position.x, ((MazeState) state).position.y);
+        LinkedList<Position> cheesesPositions = new LinkedList<Position>();
+        for (Position cheeses : maze.cheesePositions) {
+            if(!((MazeState)state).cheeseEaten.contains(cheeses)){
+                cheesesPositions.add(cheeses);
+            }
+        }
+        
+        int x, y, x1, y1;
+        double distance = Double.MAX_VALUE, totalDistance = 0;
+        x = actualPosition.x;
+        y = actualPosition.y;
+        int numberCheeses = cheesesPositions.size();
+
+        for (int i = 0; i < numberCheeses; i++) {
             Position cheeseselected = new Position(0, 0);
             for (Position cheeseI : cheesesPositions) {
                 x1 = cheeseI.x;

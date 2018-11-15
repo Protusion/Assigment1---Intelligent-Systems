@@ -7,6 +7,8 @@ package algorithms;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 import search.*;
 
@@ -16,8 +18,8 @@ import search.*;
  */
 public class DepthFirst extends SearchAlgorithm {
 
-    protected ArrayList<State> explored = new ArrayList<State>(); // Set of explored nodes
-    protected Stack<Node> open = new Stack<Node>();  // LIFO Queue (Stack)
+    private Set<State> explored = new HashSet<State>(); // Set of explored nodes
+    private Stack<Node> open = new Stack<Node>();  // LIFO Queue (Stack)
 
     @Override
     public void setParams(String[] params) {
@@ -27,10 +29,9 @@ public class DepthFirst extends SearchAlgorithm {
     public void calculateSolution(Node node) {
         this.actionSequence.add(node.getAction());
         Node currentNode = node.getParent();
-        this.totalCost += problem.cost(currentNode.getState(), currentNode.getAction());
+        this.totalCost = node.getCost();
 
         while (!this.isInitialNode(currentNode)) {
-            this.totalCost += problem.cost(currentNode.getState(), currentNode.getAction());
             this.actionSequence.add(currentNode.getAction());
             currentNode = currentNode.getParent();
         }

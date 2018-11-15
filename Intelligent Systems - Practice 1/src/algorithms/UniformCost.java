@@ -7,9 +7,11 @@ package algorithms;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Set;
 import search.*;
 
 /**
@@ -18,9 +20,8 @@ import search.*;
  */
 public class UniformCost extends SearchAlgorithm {
 
-    private ArrayList<State> explored = new ArrayList<State>();
-    protected PriorityQueue<Node> open = new PriorityQueue<Node>(200, Node.BY_COST);
-    //private Queue<Node> open = new LinkedList<Node>();
+    private Set<State> explored = new HashSet<State>(); // Set of explored nodes
+    private PriorityQueue<Node> open = new PriorityQueue<Node>(200, Node.BY_COST);
 
     @Override
     public void setParams(String[] params) {
@@ -30,10 +31,9 @@ public class UniformCost extends SearchAlgorithm {
     public void calculateSolution(Node node) {
         this.actionSequence.add(node.getAction());
         Node currentNode = node.getParent();
-        this.totalCost += problem.cost(currentNode.getState(), currentNode.getAction());
+        this.totalCost = node.getCost();
 
         while (!this.isInitialNode(currentNode)) {
-            this.totalCost += problem.cost(currentNode.getState(), currentNode.getAction());
             this.actionSequence.add(currentNode.getAction());
             currentNode = currentNode.getParent();
         }

@@ -5,10 +5,11 @@
  */
 package algorithms;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Set;
 import search.*;
 
 /**
@@ -17,9 +18,8 @@ import search.*;
  */
 public class BreathFirst extends SearchAlgorithm {
 
-    private ArrayList<State> explored = new ArrayList<State>();
-    //protected PriorityQueue<Node> open = new PriorityQueue<Node>(100, Node.BY_DEPTH);
-    private Queue<Node> open = new LinkedList<Node>();
+    private Set<State> explored = new HashSet<State>(); // Set of explored nodes
+    private Queue<Node> open = new LinkedList<Node>(); // FIFO Queue
 
     @Override
     public void setParams(String[] params) {
@@ -29,10 +29,8 @@ public class BreathFirst extends SearchAlgorithm {
     public void calculateSolution(Node node) {
         this.actionSequence.add(node.getAction());
         Node currentNode = node.getParent();
-        //this.totalCost += problem.cost(currentNode.getState(), currentNode.getAction());
         this.totalCost = node.getCost();
         while (!this.isInitialNode(currentNode)) {
-            //this.totalCost += problem.cost(currentNode.getState(), currentNode.getAction());
             this.actionSequence.add(currentNode.getAction());
             currentNode = currentNode.getParent();
         }
