@@ -28,6 +28,9 @@ public interface SearchProblem{
     /** The returns the heuristic value of an state */
     public double heuristic(State state);
     
-	/** Sets parameters of the search if necessary */
-	public abstract void setParams(String[] params);
+    /** Return the second heuristic value of an state**/
+    public double heuristic2(State state);
+    
+    /** Sets parameters of the search if necessary */
+    public abstract void setParams(String[] params);
 }

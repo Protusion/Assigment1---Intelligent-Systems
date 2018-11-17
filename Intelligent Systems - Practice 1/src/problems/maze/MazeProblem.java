@@ -22,7 +22,9 @@ public class MazeProblem implements SearchProblem, ProblemVisualizable {
     private static final int NUM_CHEESES = 3;
     // Penalty factor for fight with the cat. 
     private static final double PENALTY = 2;
-
+    // Heuristic 
+    private int chosenHeuristic = 1;
+    
     /* Maze */
     Maze maze;
 
@@ -45,7 +47,17 @@ public class MazeProblem implements SearchProblem, ProblemVisualizable {
         int seed = this.maze.seed;
         int cats = this.maze.numCats;
 
-        if (args.length == 3) {
+        if (args.length == 4) {
+            try {
+                size = Integer.parseInt(args[0]);
+                cats = Integer.parseInt(args[1]);
+                seed = Integer.parseInt(args[2]);
+                chosenHeuristic = Integer.parseInt(args[3]);
+            } catch (Exception e) {
+                System.out.println("Parameters for MazeProblem are incorrect.");
+                return;
+            }
+        }else if(args.length == 3){
             try {
                 size = Integer.parseInt(args[0]);
                 cats = Integer.parseInt(args[1]);
@@ -145,10 +157,14 @@ public class MazeProblem implements SearchProblem, ProblemVisualizable {
  /* Straight path from the current position to the exit (No walls No cats)*/
     @Override
     public double heuristic(State state) {
+        if(this.chosenHeuristic == 2){
+            return heuristic2(state);
+        }
         return abs(((MazeState) state).position.x - maze.output().x) + abs(((MazeState) state).position.y - maze.output().y);
     }
 
     /* Gets only 1 cheese (if there is any left), which is the furthest cheese from the exit. After it goes to the exit */
+    @Override
     public double heuristic2(State state) {
         Position startingPosition = new Position(((MazeState) state).position.x, ((MazeState) state).position.y);
         Position furthestCheese = null;
@@ -170,6 +186,8 @@ public class MazeProblem implements SearchProblem, ProblemVisualizable {
         return abs(startingPosition.x - maze.output().x) + abs(startingPosition.y - maze.output().y);
     }
 
+    /* ---------------------------- DISCARDED HEURISTICS ------------------------- */
+    
     /* Looks for the closest cheese from the current position until it gets to the exit (No walls No cats */
     public double heuristic3(State state) {
         Position actualPosition = new Position(((MazeState) state).position.x, ((MazeState) state).position.y);
